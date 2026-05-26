@@ -1,0 +1,32 @@
+# 1. name (Requisito)
+name: 'Branch Naming Validator'
+
+# 2. description (Requisito)
+description: 'Valida si el nombre de la rama cumple con un patrón específico.'
+
+# 3. branding opcional (Requisito)
+branding:
+  icon: 'check-square'
+  color: 'green'
+
+# 4. inputs (Requisito)
+inputs:
+  branch_name:
+    description: 'El nombre de la rama a validar'
+    required: true
+  allowed_prefixes:
+    description: 'Prefijos permitidos separados por comas (ej: feature,bugfix,hotfix)'
+    required: false
+    default: 'feature,bugfix,hotfix,release'
+
+# 5. outputs (Requisito)
+outputs:
+  is_valid:
+    description: 'Devuelve "true" si la rama es válida o "false" si no lo es'
+  reason:
+    description: 'Mensaje que explica el resultado de la validación'
+
+# Configuración del motor de ejecución (Obligatorio para que GitHub entienda el archivo)
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
