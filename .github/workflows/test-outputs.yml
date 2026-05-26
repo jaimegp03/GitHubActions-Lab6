@@ -1,0 +1,34 @@
+name: 'Prueba de Outputs de la Action'
+
+# Permite ejecutar este flujo manualmente desde la pestaña Actions
+on: [workflow_dispatch]
+
+jobs:
+  probar-outputs:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Descargar el código del repositorio actual
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # 2. Ejecutar nuestra Custom Action usando la ruta local (./)
+      # Aquí le pasamos los datos del workflow hacia la acción
+      - name: Ejecutar validador de ramas
+        id: validador_local
+        uses: ./
+        with:
+          branch_name: 'feature/autenticacion-usuarios'
+          allowed_prefixes: 'feature,bugfix,hotfix'
+
+      # 3. CONSUMIR Y USAR LOS OUTPUTS POSTERIORMENTE (Requisito Parte 3)
+      - name: Imprimir resultado del Output de Validación
+        run: |
+          echo "El resultado devuelto por la acción es: ${{ steps.validador_local.outputs.is_valid }}"
+          echo "El mensaje explicativo devuelto es: ${{ steps.validador_local.outputs.reason }}"
+
+      # 4. Usar los outputs para tomar una decisión lógica en el flujo
+      - name: Paso condicional si la rama es válida
+        if: steps.validador_local.outputs.is_valid == 'true'
+        run: |
+          echo "¡Perfecto! Como el output 'is_valid' ha sido true, este paso se ejecuta."
+          echo "Razón validada: ${{ steps.validador_local.outputs.reason }}"
